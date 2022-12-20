@@ -50,7 +50,7 @@ contract Campaign {
 
     modifier beforeed() {
         require(
-            block.timestamp <= (endAt * 24 * 3600) + block.timestamp,
+            block.timestamp < (endAt * 24 * 3600) + block.timestamp,
             "Campaign has already ended"
         );
         _;
@@ -88,7 +88,10 @@ contract Campaign {
         uint256 _minimum,
         address _owner
     ) {
-        require(_end > block.timestamp, "End time is less than current time");
+        require(
+            block.timestamp < (_end * 24 * 3600) + block.timestamp,
+            "End time is less than current time"
+        );
 
         manager = _owner;
         goal = _goal;
