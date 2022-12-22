@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import CustomButton from "./CustomButton";
 import { navLinks } from "../constants/index";
-const address = "";
+import { useStateContext } from "../context";
 const Navbar = () => {
+  const { connect, address } = useStateContext();
   const router = useRouter();
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
@@ -34,7 +34,7 @@ const Navbar = () => {
           styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
           handleClick={() => {
             if (address) router.push("create-campaign");
-            else "connect();"
+            else connect();
           }}
         />
 
@@ -56,7 +56,7 @@ const Navbar = () => {
             <img
               src={"./logo.svg"}
               alt="user"
-              className="w-[60%] h-[60%] object-contain"
+              className="object-contain"
             />
           </Link>
         </div>
@@ -111,7 +111,7 @@ const Navbar = () => {
               styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
               handleClick={() => {
                 if (address) router.push("create-campaign");
-                else "connect();"
+                else connect();
               }}
             />
           </div>
