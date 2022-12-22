@@ -7,9 +7,22 @@ contract CampaignFactory {
     function createCampaign(
         uint256 _goal,
         uint256 _end,
-        uint256 _minimum
+        uint256 _minimum,
+        string memory _name,
+        string memory _title,
+        string memory _description,
+        string memory _image
     ) public returns (address) {
-        Campaign newCampaign = new Campaign(_goal, _end, _minimum, msg.sender);
+        Campaign newCampaign = new Campaign(
+            _goal,
+            _end,
+            _minimum,
+            msg.sender,
+            _name,
+            _title,
+            _description,
+            _image
+        );
         deployedCampaigns.push(newCampaign);
         return address(newCampaign);
     }
@@ -39,7 +52,10 @@ contract Campaign {
     mapping(address => uint256) public pledgeOf; // contributors
     mapping(address => mapping(uint256 => bool)) public approvals; // requests voters
     bool public canceled; // it is paused?
-
+    string public name;
+    string public title;
+    string public description;
+    string public image;
     modifier restricted() {
         require(
             msg.sender == manager,
@@ -50,7 +66,7 @@ contract Campaign {
 
     modifier beforeed() {
         require(
-            block.timestamp < (endAt * 24 * 3600) + block.timestamp,
+            block.timestamp < endAt * 24 * 3600,
             "Campaign has already ended"
         );
         _;
@@ -86,13 +102,20 @@ contract Campaign {
         uint256 _goal,
         uint256 _end,
         uint256 _minimum,
-        address _owner
+        address _owner,
+        string memory _name,
+        string memory _title,
+        string memory _description,
+        string memory _image
     ) {
         require(
             block.timestamp < (_end * 24 * 3600) + block.timestamp,
             "End time is less than current time"
         );
-
+        name = _name;
+        title = _title;
+        description = _description;
+        image = _image;
         manager = _owner;
         goal = _goal;
         pledged = 0;
@@ -183,7 +206,11 @@ contract Campaign {
             uint256, // balance
             uint256, // num of requests
             uint256, // num of contributors
-            address // manager
+            address, // manager
+            string memory, //name
+            string memory, //title
+            string memory, //description
+            string memory //image
         )
     {
         return (
@@ -191,7 +218,11 @@ contract Campaign {
             address(this).balance,
             requests.length,
             countPledges,
-            manager
+            manager,
+            name,
+            title,
+            description,
+            image
         );
     }
 
