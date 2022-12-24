@@ -33,7 +33,7 @@ const Navbar = () => {
           title={address ? "Create a campaign" : "Connect"}
           styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
           handleClick={() => {
-            if (address) router.push("create-campaign");
+            if (address) router.push("/create-campaign");
             else connect();
           }}
         />
@@ -53,16 +53,12 @@ const Navbar = () => {
       <div className="sm:hidden flex justify-between items-center relative">
         <div className="w-[40px] h-[40px] rounded-[10px] bg-[#2c2f32] flex justify-center items-center cursor-pointer">
           <Link href={"/"}>
-            <img
-              src={"./logo.svg"}
-              alt="user"
-              className="object-contain"
-            />
+            <img src={"/logo.svg"} alt="user" className="object-contain" />
           </Link>
         </div>
 
         <img
-          src={"./menu.svg"}
+          src={"/menu.svg"}
           alt="menu"
           className="w-[34px] h-[34px] object-contain cursor-pointer"
           onClick={() => setToggleDrawer((prev) => !prev)}
@@ -110,7 +106,7 @@ const Navbar = () => {
               title={address ? "Create a campaign" : "Connect"}
               styles={address ? "bg-[#1dc071]" : "bg-[#8c6dfd]"}
               handleClick={() => {
-                if (address) router.push("create-campaign");
+                if (address) router.push("/create-campaign");
                 else connect();
               }}
             />

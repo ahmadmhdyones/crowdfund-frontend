@@ -27,3 +27,5 @@ export const navLinks = [
     disabled: true,
   },
 ];
+
+export const execluded = ["/register", "/login"];
