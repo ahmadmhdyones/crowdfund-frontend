@@ -2,26 +2,26 @@
 pragma solidity ^0.8.9;
 
 contract CampaignFactory {
-    Campaign[] public deployedCampaigns;
+    Campaign[] public deployedCampaigns; // created campaigns
 
     function createCampaign(
-        uint256 _goal,
-        uint256 _end,
-        uint256 _minimum,
         string memory _name,
         string memory _title,
         string memory _description,
-        string memory _image
+        string memory _image,
+        uint256 _goal,
+        uint256 _end,
+        uint256 _minimum
     ) public returns (address) {
         Campaign newCampaign = new Campaign(
-            _goal,
-            _end,
-            _minimum,
-            msg.sender,
             _name,
             _title,
             _description,
-            _image
+            _image,
+            _goal,
+            _end,
+            _minimum,
+            msg.sender
         );
         deployedCampaigns.push(newCampaign);
         return address(newCampaign);
@@ -36,26 +36,43 @@ contract Campaign {
     struct Request {
         string description; // for what?
         uint256 amount; // how much?
-        address payable recipient; // for who (supplier)?
+        address payable recipient; // for who? (supplier)
         bool completed; // it is done?
         uint256 countApprovals; // number of approved votes
     }
 
-    address public manager; // owner
-    uint256 public goal; // target amount
-    uint256 public pledged; // raised amount
-    uint256 public startAt; // launch date
-    uint256 public endAt; // deadline
-    uint256 public minPledge; // minimum amount of contribution
+    address private manager; // owner
+    string private name; // owner's name
+    string private title; // title of the campaign
+    string private description; // details about campaign
+    string private image; // cover pic path
+    uint256 private goal; // target amount
+    uint256 private pledged; // raised amount
+    uint256 private startAt; // launch date
+    uint256 private endAt; // deadline
+    uint256 private minPledge; // minimum amount of contribution
     Request[] public requests; // requests of needs
-    uint256 public countPledges; // number of contributors
+    uint256 private countPledges; // number of contributors
     mapping(address => uint256) public pledgeOf; // contributors
     mapping(address => mapping(uint256 => bool)) public approvals; // requests voters
     bool public canceled; // it is paused?
-    string public name;
-    string public title;
-    string public description;
-    string public image;
+
+    struct Summary {
+        address manager;
+        string name;
+        string title;
+        string description;
+        string image;
+        uint256 goal;
+        uint256 pledged;
+        uint256 balance;
+        uint256 endAt;
+        uint256 startAt;
+        uint256 minPledge;
+        uint256 countrequests;
+        uint256 countPledges;
+    }
+
     modifier restricted() {
         require(
             msg.sender == manager,
@@ -65,10 +82,7 @@ contract Campaign {
     }
 
     modifier beforeed() {
-        require(
-            block.timestamp < endAt * 24 * 3600,
-            "Campaign has already ended"
-        );
+        require(block.timestamp <= endAt, "Campaign has already ended");
         _;
     }
 
@@ -99,24 +113,22 @@ contract Campaign {
     }
 
     constructor(
-        uint256 _goal,
-        uint256 _end,
-        uint256 _minimum,
-        address _owner,
         string memory _name,
         string memory _title,
         string memory _description,
-        string memory _image
+        string memory _image,
+        uint256 _goal,
+        uint256 _end,
+        uint256 _minimum,
+        address _owner
     ) {
-        require(
-            block.timestamp < (_end * 24 * 3600) + block.timestamp,
-            "End time is less than current time"
-        );
+        require(_end > block.timestamp, "End time is less than current time");
+
+        manager = _owner;
         name = _name;
         title = _title;
         description = _description;
         image = _image;
-        manager = _owner;
         goal = _goal;
         pledged = 0;
         startAt = block.timestamp;
@@ -198,32 +210,23 @@ contract Campaign {
         request.completed = true;
     }
 
-    function getSummary()
-        external
-        view
-        returns (
-            uint256, // minPledge
-            uint256, // balance
-            uint256, // num of requests
-            uint256, // num of contributors
-            address, // manager
-            string memory, //name
-            string memory, //title
-            string memory, //description
-            string memory //image
-        )
-    {
-        return (
-            minPledge,
-            address(this).balance,
-            requests.length,
-            countPledges,
-            manager,
-            name,
-            title,
-            description,
-            image
-        );
+    function getSummary() external view returns (Summary memory) {
+        Summary memory summary = Summary({
+            manager: manager,
+            name: name,
+            title: title,
+            description: description,
+            image: image,
+            goal: goal,
+            pledged: pledged,
+            balance: address(this).balance,
+            startAt: startAt,
+            endAt: endAt,
+            minPledge: minPledge,
+            countrequests: requests.length,
+            countPledges: countPledges
+        });
+        return summary;
     }
 
     function getBalance() external view returns (uint256) {
@@ -253,7 +256,8 @@ contract Campaign {
         return result;
     }
 
-    function isOwner() external view restricted returns (bool) {
-        return true;
+    function isOwner() external view returns (bool) {
+        if (msg.sender == manager) return true;
+        else return false;
     }
 }
