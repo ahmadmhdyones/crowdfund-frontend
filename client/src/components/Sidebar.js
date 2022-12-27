@@ -38,14 +38,13 @@ const Icon = ({ styles, name, isActive, disabled, handleClick }) => {
 
 const Sidebar = () => {
   const router = useRouter();
-  const [isActive, setIsActive] = useState("dashboard");
+  const val =
+    router.pathname.slice(1) === "" ? "dashboard" : router.pathname.slice(1);
+  const [isActive, setIsActive] = useState(val);
   return (
     <div className="flex justify-between items-center flex-col sticky top-5 h-[93vh]">
       <Link href={"/"}>
-        <Icon
-          styles="w-[52px] h-[52px] bg-[#2c2f32]"
-          name={"logo"}
-        />
+        <Icon styles="w-[52px] h-[52px] bg-[#2c2f32]" name={"logo"} />
       </Link>
 
       <div className="flex-1 flex flex-col justify-between items-center bg-[#1c1c24] rounded-[20px] w-[76px] py-4 mt-12">
