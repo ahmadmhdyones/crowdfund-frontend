@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useStateContext } from "../src/context/index";
 import Link from "next/link";
+import Loader from '../src/components/Loader'
 import { useContract } from "@thirdweb-dev/react";
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +15,6 @@ const Home = () => {
   const fetchCampaigns = async () => {
     setIsLoading(true);
     const data = await getCampaigns();
-    console.log(data);
     setCampaigns(data);
     setIsLoading(false);
   };
@@ -23,14 +23,14 @@ const Home = () => {
       try {
         fetchCampaigns();
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     }
   }, [address, contract, campaignContract]);
   return (
     <div>
       {isLoading ? (
-        <h1 className="text-white font-bold font-epilogue">Loading..</h1>
+        <Loader />
       ) : (
         <ul>
           {campaigns.map((link) => (

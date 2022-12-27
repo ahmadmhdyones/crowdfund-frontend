@@ -9,12 +9,12 @@ export const navLinks = [
   },
   {
     name: "payment",
-    link: "/",
+    link: "/payment",
     disabled: true,
   },
   {
     name: "withdraw",
-    link: "/",
+    link: "/withdraw",
     disabled: true,
   },
   {
@@ -23,7 +23,7 @@ export const navLinks = [
   },
   {
     name: "logout",
-    link: "/",
+    link: "/logout",
     disabled: true,
   },
 ];

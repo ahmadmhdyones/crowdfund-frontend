@@ -18,7 +18,7 @@ export const StateContextProvider = ({ children }) => {
 
   //getting the address(contract) of the FactoryCampaign contract
   const { contract } = useContract(
-    "0xfc53E8A55cA5F3840114B3cF8E8c2D3757Daf94A"
+    "0x2A924D6563B1879878d594F62f401099d3322ed2"
   );
 
   //getting the createCampaign function
@@ -30,18 +30,24 @@ export const StateContextProvider = ({ children }) => {
   //creating the functionality of the creation of a campaign
   const publishCampaign = async (form) => {
     try {
+      // _name,
+      //       _title,
+      //       _description,
+      //       _image,
+      //       _goal,
+      //       _end,
+      //       _minimum,
       const data = await createCampaign([
-        form.target,
-        new Date(form.deadline).getTime(), //unix based timestamp
-        form.min,
         form.name,
         form.title,
         form.description,
         form.image,
+        form.target,
+        new Date(form.deadline).getTime(), //unix based timestamp
+        form.min,
       ]);
-      console.log("contract call success", data);
     } catch (err) {
-      console.log("contract call error", err);
+      console.error(err);
     }
   };
 
@@ -54,7 +60,7 @@ export const StateContextProvider = ({ children }) => {
   //Related to Campaign contract
 
   const { contract: campaignContract } = useContract(
-    "0xceBbF5E0c5D4B2a7cCD715258fA0C2310d01191b"
+    "0x40c2941DEae502b7EDBEd01DC67c9759eBcC01Ce"
   );
 
   const getCampaignSummary = async () => {
