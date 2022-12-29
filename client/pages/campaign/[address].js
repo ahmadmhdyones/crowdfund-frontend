@@ -66,6 +66,7 @@ const CampaignDetailed = () => {
       console.log(new Date(data[9].toNumber()));
       // console.log(daysLeft(fixedCampaign.endAt));
       setRemainingDays(daysLeft(fixedCampaign.startAt));
+
       setIsLoading(false);
       setCampaign(fixedCampaign);
     }
@@ -117,7 +118,10 @@ const CampaignDetailed = () => {
             </div>
 
             <div className="flex md:w-[150px] w-full flex-wrap justify-between gap-[30px]">
-              <CountBox title="Days Left" value={remainingDays} />
+              <CountBox
+                title={remainingDays <= 0 ? "" : "Days Left"}
+                value={remainingDays <= 0 ? "It's Over" : remainingDays}
+              />
               <CountBox
                 title={`Raised of ${campaign.goal}`}
                 value={campaign.pledged}
@@ -181,6 +185,7 @@ const CampaignDetailed = () => {
                     className="w-full py-[10px] sm:px-[20px] px-[15px] outline-none border-[1px] border-[#3a3a43] bg-transparent font-epilogue text-white text-[18px] leading-[30px] placeholder:text-[#4b5264] rounded-[10px]"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
+                    disabled={remainingDays <= 0}
                   />
 
                   <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
@@ -196,8 +201,9 @@ const CampaignDetailed = () => {
                   <CustomButton
                     btnType="button"
                     title="Fund Campaign"
-                    styles="w-full bg-[#8c6dfd]"
+                    styles="w-full bg-[#8c6dfd] disabled:opacity-50"
                     handleClick={handleDonate}
+                    isDisabled={remainingDays <= 0}
                   />
                 </div>
               </div>
