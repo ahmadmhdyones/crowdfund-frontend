@@ -1,7 +1,7 @@
 import React from "react";
 
 const MyCampaigns = () => {
-  return <div>MyCampaigns</div>;
+  return <div>MyCampaigns</div>
 };
 
 export default MyCampaigns;
