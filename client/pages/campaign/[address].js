@@ -201,7 +201,7 @@ const CampaignDetailed = () => {
                   <CustomButton
                     btnType="button"
                     title="Fund Campaign"
-                    styles="w-full bg-[#8c6dfd] disabled:opacity-50"
+                    styles="w-full bg-[#8c6dfd] "
                     handleClick={handleDonate}
                     isDisabled={remainingDays <= 0}
                   />
