@@ -28,4 +28,4 @@ export const navLinks = [
   },
 ];
 
-export const execluded = ["/register", "/login"];
+export const execluded = ["/register", "/login", "/landing-page"];
