@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.9.0;
 
 contract CampaignFactory {
     Campaign[] public deployedCampaigns; // created campaigns
@@ -95,14 +95,14 @@ contract Campaign {
     }
 
     modifier succeeded() {
-        require(pledged >= goal, "Campaign has succeeded");
+        require(pledged >= goal, "Campaign has not succeeded");
         _;
     }
 
     modifier notsucceeded() {
         require(
             pledged < goal,
-            "You cannot withdraw, Campaign has not succeeded"
+            "You cannot, Campaign has succeeded"
         );
         _;
     }
@@ -134,9 +134,14 @@ contract Campaign {
         startAt = block.timestamp;
         endAt = _end;
         minPledge = _minimum;
+        canceled = false;
     }
 
     function cancel() external restricted activated notsucceeded {
+        require(
+            pledged == address(this).balance,
+            "Campaign has used pledged money"
+        );
         canceled = true;
     }
 
@@ -153,7 +158,7 @@ contract Campaign {
         pledgeOf[msg.sender] += msg.value;
     }
 
-    function refund() external payable beforeed contributed notsucceeded {
+    function refund() external payable contributed notsucceeded {
         uint256 bal = pledgeOf[msg.sender];
         address payable user = payable(msg.sender);
         user.transfer(bal);
@@ -256,8 +261,8 @@ contract Campaign {
         return result;
     }
 
-    function isOwner() external view returns (bool) {
-        if (msg.sender == manager) return true;
+    function isOwner(address addr) external view returns (bool) {
+        if (addr == manager) return true;
         else return false;
     }
 }
