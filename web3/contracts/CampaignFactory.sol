@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9.0;
+pragma solidity ^0.8.9;
 
 contract CampaignFactory {
     Campaign[] public deployedCampaigns; // created campaigns
@@ -100,10 +100,7 @@ contract Campaign {
     }
 
     modifier notsucceeded() {
-        require(
-            pledged < goal,
-            "You cannot, Campaign has succeeded"
-        );
+        require(pledged < goal, "You cannot, Campaign has succeeded");
         _;
     }
 
