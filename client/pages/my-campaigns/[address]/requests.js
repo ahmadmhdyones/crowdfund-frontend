@@ -34,7 +34,6 @@ const Requests = () => {
     if (isOwner) console.log(isOwner);
     if (isOwner === false) {
       // router.push("/");
-      console.log(isOwner);
     }
   }, [isOwner]);
   const { data, isLoading: isLoadingRequest } = useContractRead(

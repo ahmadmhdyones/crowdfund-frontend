@@ -19,7 +19,6 @@ const CreateCampaign = () => {
     image: "",
     min: "",
   });
-  console.log(new Date(form.deadline).getTime());
   const handleFormFieldChange = (fieldName, e) => {
     setForm({ ...form, [fieldName]: e.target.value });
   };
@@ -30,7 +29,6 @@ const CreateCampaign = () => {
     checkIfImage(form.image, async (exists) => {
       if (exists) {
         setIsLoading(true);
-        console.log(form);
         await publishCampaign({
           ...form,
 

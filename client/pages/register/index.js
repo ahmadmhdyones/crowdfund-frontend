@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CustomButton from "../../src/components/CustomButton";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Layout from "../../src/components/Layout";
 
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
@@ -140,3 +141,7 @@ const Register = () => {
 };
 
 export default Register;
+
+Register.getLayout = function (page) {
+  return <Layout>{page}</Layout>;
+};

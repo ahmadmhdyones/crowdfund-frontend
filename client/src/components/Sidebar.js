@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
 import { navLinks } from "../constants/index";
 import { useRouter } from "next/router";
+import { useLogout } from "../hooks/useLogout";
 
 const Icon = ({ styles, name, isActive, disabled, handleClick }) => {
   return (
@@ -37,6 +37,7 @@ const Icon = ({ styles, name, isActive, disabled, handleClick }) => {
 };
 
 const Sidebar = () => {
+  const logout = useLogout();
   const router = useRouter();
   const val =
     router.pathname.slice(1) === "" ? "dashboard" : router.pathname.slice(1);
@@ -55,9 +56,13 @@ const Sidebar = () => {
               {...link}
               isActive={isActive}
               handleClick={() => {
-                if (!link.disabled) {
+                if (!link.disabled && link.name !== "logout") {
                   setIsActive(link.name);
                   router.push(link.link);
+                }
+                if (link.name === "logout") {
+                  logout();
+                  router.push("/login");
                 }
               }}
             />
@@ -70,3 +75,5 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+

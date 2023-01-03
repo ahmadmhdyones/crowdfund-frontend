@@ -20,11 +20,8 @@ const NewRequest = () => {
   });
   const router = useRouter();
   const { contract } = useContract(router.query.address);
-  console.log(address);
-  console.log(typeof address);
   const { data: isOwner, isLoading: isLoadingOwner } = useContractRead(contract, "isOwner", address)
   useEffect(() => {
-    console.log(isOwner);
     if (isOwner === false) {
       router.push("/");
     }

@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomButton from "../../src/components/CustomButton";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
+import Layout from "../../src/components/Layout";
+import { useLogin } from "../../src/hooks/useLogin";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
+import { useStateContext } from "../../src/context";
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
     .email()
@@ -18,6 +22,9 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = () => {
+  const router = useRouter();
+
+  const login = useLogin();
   return (
     <Formik
       initialValues={{
@@ -25,11 +32,15 @@ const Login = () => {
         password: "",
       }}
       validationSchema={LoginSchema}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          console.log(JSON.stringify(values, null, 2));
+      onSubmit={async (values, { setSubmitting }) => {
+        try {
+          setSubmitting(true);
+          await login(values);
+          router.push("/");
           setSubmitting(false);
-        }, 400);
+        } catch (err) {
+          console.log(err);
+        }
       }}
     >
       {({ isSubmitting }) => (
@@ -74,7 +85,6 @@ const Login = () => {
                 />
               </label>
             </div>
-              
 
             <div className="flex justify-center items-center mt-[40px]">
               <CustomButton
@@ -92,3 +102,7 @@ const Login = () => {
 };
 
 export default Login;
+
+Login.getLayout = function (page) {
+  return <Layout>{page}</Layout>;
+};

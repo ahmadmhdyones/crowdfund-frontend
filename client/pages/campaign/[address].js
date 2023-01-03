@@ -15,7 +15,7 @@ const CampaignDetailed = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { address } = router.query;
-  console.log(address);
+  (address);
   const [campaign, setCampaign] = useState([]);
   const [remainingDays, setRemainingDays] = useState(0);
   const [amount, setAmount] = useState("");
@@ -65,8 +65,6 @@ const CampaignDetailed = () => {
       // countrequests: requests.length, 11
       // countPledges: countPledges 12
 
-      console.log(new Date(data[9].toNumber()));
-      // console.log(daysLeft(fixedCampaign.endAt));
       setRemainingDays(daysLeft(fixedCampaign.endAt));
 
       setIsLoading(false);

@@ -1,4 +1,4 @@
-import React, { useContext, createContext } from "react";
+import React, { useContext, createContext, useState, useEffect } from "react";
 import {
   useAddress,
   useContract,
@@ -6,11 +6,13 @@ import {
   useContractWrite,
 } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
-
+import Cookies from "js-cookie";
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   //general fetches (metamask address and connect to metamask method)
+  const [token, setToken] = useState(null);
+  
   const address = useAddress();
   const connect = useMetamask();
   //related to Factory Smart Contract
@@ -36,7 +38,6 @@ export const StateContextProvider = ({ children }) => {
       //       _goal,
       //       _end,
       //       _minimum,
-      console.log("from context before", form.deadline.toString());
       const data = await createCampaign([
         form.name,
         form.title,
@@ -46,7 +47,6 @@ export const StateContextProvider = ({ children }) => {
         form.deadline.toString(), //unix based timestamp
         form.min,
       ]);
-      console.log("from context after", form.deadline);
     } catch (err) {
       console.error(err);
     }
@@ -79,6 +79,8 @@ export const StateContextProvider = ({ children }) => {
         getCampaigns,
         campaignContract,
         getCampaignSummary,
+        token,
+        setToken,
       }}
     >
       {children}

@@ -24,8 +24,15 @@ export const navLinks = [
   {
     name: "logout",
     link: "/logout",
-    disabled: true,
   },
 ];
 
 export const execluded = ["/register", "/login", "/landing-page"];
+
+export const authRoutes = ["/login", "/register"];
+export const protectedRoutes = [
+  "/create-campaign",
+  "/profile",
+  "/my-campaigns",
+  "/my-contributions",
+];

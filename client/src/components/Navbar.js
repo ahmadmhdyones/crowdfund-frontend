@@ -5,7 +5,7 @@ import CustomButton from "./CustomButton";
 import { navLinks } from "../constants/index";
 import { useStateContext } from "../context";
 const Navbar = () => {
-  const { connect, address } = useStateContext();
+  const { connect, address, token } = useStateContext();
   const router = useRouter();
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
@@ -37,16 +37,26 @@ const Navbar = () => {
             else connect();
           }}
         />
-
-        <Link href="/profile">
-          <div className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer">
-            <img
-              src={"/thirdweb.svg"}
-              alt="user"
-              className="w-[60%] h-[60%] object-contain"
-            />
-          </div>
-        </Link>
+        {token ? (
+          <Link href="/profile">
+            <div className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer">
+              <img
+                src={"/thirdweb.svg"}
+                alt="user"
+                className="w-[60%] h-[60%] object-contain"
+              />
+            </div>
+          </Link>
+        ) : (
+          <Link
+            href={"/login"}
+            className={
+              "flex justify-center items-center font-epilogue font-semibold text-[16px] leading-[26px] text-white min-h-[52px] px-4 rounded-[10px] disabled:opacity-50 bg-[#1dc071]"
+            }
+          >
+            Login
+          </Link>
+        )}
       </div>
 
       {/* Small screen navigation */}
