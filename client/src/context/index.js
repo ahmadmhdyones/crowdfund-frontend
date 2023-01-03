@@ -13,12 +13,11 @@ export const StateContextProvider = ({ children }) => {
   //general fetches (metamask address and connect to metamask method)
   const address = useAddress();
   const connect = useMetamask();
-
   //related to Factory Smart Contract
 
   //getting the address(contract) of the FactoryCampaign contract
   const { contract } = useContract(
-    "0x2A924D6563B1879878d594F62f401099d3322ed2"
+    "0xC01cb8f8EA2D8324cb8d302dD4469278E39ff536"
   );
 
   //getting the createCampaign function
@@ -37,15 +36,17 @@ export const StateContextProvider = ({ children }) => {
       //       _goal,
       //       _end,
       //       _minimum,
+      console.log("from context before", form.deadline.toString());
       const data = await createCampaign([
         form.name,
         form.title,
         form.description,
         form.image,
         form.target,
-        new Date(form.deadline).getTime(), //unix based timestamp
+        form.deadline.toString(), //unix based timestamp
         form.min,
       ]);
+      console.log("from context after", form.deadline);
     } catch (err) {
       console.error(err);
     }
@@ -60,7 +61,7 @@ export const StateContextProvider = ({ children }) => {
   //Related to Campaign contract
 
   const { contract: campaignContract } = useContract(
-    "0x40c2941DEae502b7EDBEd01DC67c9759eBcC01Ce"
+    "0x0BBF5D3AB5E8437dC818E0363008E2fe678510a9"
   );
 
   const getCampaignSummary = async () => {

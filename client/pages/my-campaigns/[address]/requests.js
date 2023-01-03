@@ -15,16 +15,28 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Swal from "sweetalert2";
-
+import { useStateContext } from "../../../src/context";
 function createData(id, description, amount, recipient, state, approvalCount) {
   return { id, description, amount, recipient, state, approvalCount };
 }
 
 const Requests = () => {
+  const { address } = useStateContext();
   let rows;
   const router = useRouter();
   const { contract } = useContract(router.query.address);
-
+  const { data: isOwner, isLoading: isLoadingOwner } = useContractRead(
+    contract,
+    "isOwner",
+    address
+  );
+  useEffect(() => {
+    if (isOwner) console.log(isOwner);
+    if (isOwner === false) {
+      // router.push("/");
+      console.log(isOwner);
+    }
+  }, [isOwner]);
   const { data, isLoading: isLoadingRequest } = useContractRead(
     contract,
     "getRequests"
@@ -72,7 +84,10 @@ const Requests = () => {
   };
   return (
     <>
-      {isLoadingRequest || isLoadingFinlize || isLoadingAmount ? (
+      {isLoadingRequest ||
+      isLoadingFinlize ||
+      isLoadingAmount ||
+      isLoadingOwner ? (
         <Loader />
       ) : (
         <TableContainer component={Paper}>
@@ -161,7 +176,9 @@ const Requests = () => {
                               !(
                                 row.approvalCount > 0 &&
                                 row.approvalCount >=
-                                  contributorsNumber[12].toNumber() / 2 + 1
+                                  Math.ceil(
+                                    (contributorsNumber[12].toNumber() + 1) / 2
+                                  )
                               )
                             }
                             onClick={() => handleClick(row.id)}

@@ -19,7 +19,7 @@ const CreateCampaign = () => {
     image: "",
     min: "",
   });
-
+  console.log(new Date(form.deadline).getTime());
   const handleFormFieldChange = (fieldName, e) => {
     setForm({ ...form, [fieldName]: e.target.value });
   };
@@ -30,8 +30,11 @@ const CreateCampaign = () => {
     checkIfImage(form.image, async (exists) => {
       if (exists) {
         setIsLoading(true);
+        console.log(form);
         await publishCampaign({
           ...form,
+
+          deadline: new Date(form.deadline).getTime(),
           //exchanging to Wei
           target: ethers.utils.parseUnits(form.target, 18).toString(),
           min: ethers.utils.parseUnits(form.min, 18).toString(),

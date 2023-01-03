@@ -15,6 +15,7 @@ const CampaignDetailed = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { address } = router.query;
+  console.log(address);
   const [campaign, setCampaign] = useState([]);
   const [remainingDays, setRemainingDays] = useState(0);
   const [amount, setAmount] = useState("");
@@ -28,11 +29,13 @@ const CampaignDetailed = () => {
     contract,
     "getSummary"
   );
-  const { mutateAsync: pledge } = useContractWrite(contract, "pledge");
+  const { mutateAsync: pledge, isLoading: isLoadingPledge } = useContractWrite(
+    contract,
+    "pledge"
+  );
   useEffect(() => {
     setIsLoading(true);
     if (data) {
-      console.log(data);
       const fixedCampaign = {
         owner: data[0],
         name: data[1],
@@ -42,8 +45,8 @@ const CampaignDetailed = () => {
         goal: ethers.utils.formatEther(data[5].toString()),
         pledged: ethers.utils.formatEther(data[6].toString()),
         balance: ethers.utils.formatEther(data[7].toString()),
-        startAt: data[8].toNumber(),
-        endAt: data[9].toNumber(),
+        endAt: data[8].toNumber(),
+        startAt: data[9].toNumber(),
         minPledge: ethers.utils.formatEther(data[10].toString()),
         countrequests: data[11].toNumber(),
         countPledges: data[12].toNumber(),
@@ -62,10 +65,9 @@ const CampaignDetailed = () => {
       // countrequests: requests.length, 11
       // countPledges: countPledges 12
 
-      console.log(fixedCampaign);
       console.log(new Date(data[9].toNumber()));
       // console.log(daysLeft(fixedCampaign.endAt));
-      setRemainingDays(daysLeft(fixedCampaign.startAt));
+      setRemainingDays(daysLeft(fixedCampaign.endAt));
 
       setIsLoading(false);
       setCampaign(fixedCampaign);
@@ -89,7 +91,7 @@ const CampaignDetailed = () => {
   };
   return (
     <>
-      {isLoading || isLoadingSummary || isLoadingContract ? (
+      {isLoading || isLoadingSummary || isLoadingContract || isLoadingPledge ? (
         <Loader />
       ) : (
         <div>
