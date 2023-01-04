@@ -3,7 +3,8 @@ import CustomButton from "../../src/components/CustomButton";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Layout from "../../src/components/Layout";
-
+import { RegisterAPI } from "../../src/apis/registerAPI";
+import { useRouter } from "next/router";
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
     .min(2, "Too Short!")
@@ -31,6 +32,7 @@ const SignupSchema = Yup.object().shape({
 });
 
 const Register = () => {
+  const router = useRouter();
   return (
     <Formik
       initialValues={{
@@ -40,11 +42,18 @@ const Register = () => {
         confirmPassword: "",
       }}
       validationSchema={SignupSchema}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          console.log(JSON.stringify(values, null, 2));
+      onSubmit={async (values, { setSubmitting }) => {
+        setSubmitting(true);
+        try {
+          const response = await RegisterAPI.register({
+            ...values,
+            name: values.username,
+          });
           setSubmitting(false);
-        }, 400);
+          router.push("/login");
+        } catch (err) {
+          console.log(err);
+        }
       }}
     >
       {({ isSubmitting }) => (
@@ -58,7 +67,7 @@ const Register = () => {
             <div className="flex flex-wrap gap-[40px]">
               <label className="flex-1 w-full flex flex-col">
                 <span className="font-epilogue font-medium text-[14px] leading-[22px] text-[#808191] mb-[10px]">
-                  Username
+                  username
                 </span>
                 <ErrorMessage
                   name="username"
@@ -68,7 +77,7 @@ const Register = () => {
                 <Field
                   type="text"
                   name="username"
-                  placeholder="Username"
+                  placeholder="username"
                   className="py-[15px] sm:px-[25px] px-[15px] outline-none border-[1px] border-[#3a3a43] bg-transparent font-epilogue text-white text-[14px] placeholder:text-[#4b5264] rounded-[10px] sm:min-w-[300px]"
                 />
               </label>
