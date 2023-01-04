@@ -6,20 +6,19 @@ import {
   useContractWrite,
 } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
-import Cookies from "js-cookie";
+
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  //general fetches (metamask address and connect to metamask method)
   const [token, setToken] = useState(null);
-  
+
   const address = useAddress();
   const connect = useMetamask();
   //related to Factory Smart Contract
 
   //getting the address(contract) of the FactoryCampaign contract
   const { contract } = useContract(
-    "0xC01cb8f8EA2D8324cb8d302dD4469278E39ff536"
+    "0x944ac44717a2c9722C3A4A525A735884B0C04753"
   );
 
   //getting the createCampaign function
@@ -31,13 +30,6 @@ export const StateContextProvider = ({ children }) => {
   //creating the functionality of the creation of a campaign
   const publishCampaign = async (form) => {
     try {
-      // _name,
-      //       _title,
-      //       _description,
-      //       _image,
-      //       _goal,
-      //       _end,
-      //       _minimum,
       const data = await createCampaign([
         form.name,
         form.title,
@@ -52,22 +44,7 @@ export const StateContextProvider = ({ children }) => {
     }
   };
 
-  //calling a simple return function on the factory contract
-  const getCampaigns = async () => {
-    const campaigns = await contract.call("getDeployedCampaigns");
-    return campaigns;
-  };
-
-  //Related to Campaign contract
-
-  const { contract: campaignContract } = useContract(
-    "0x0BBF5D3AB5E8437dC818E0363008E2fe678510a9"
-  );
-
-  const getCampaignSummary = async () => {
-    const campaign = await campaignContract.call("getSummary");
-    return campaign;
-  };
+  
 
   return (
     <StateContext.Provider
@@ -76,9 +53,6 @@ export const StateContextProvider = ({ children }) => {
         publishCampaign,
         contract,
         connect,
-        getCampaigns,
-        campaignContract,
-        getCampaignSummary,
         token,
         setToken,
       }}

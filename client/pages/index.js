@@ -1,35 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useStateContext } from "../src/context/index";
 import Link from "next/link";
-import Loader from '../src/components/Loader'
-import { useContract } from "@thirdweb-dev/react";
+import Loader from "../src/components/Loader";
+import { useContractRead } from "@thirdweb-dev/react";
 const Home = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [campaigns, setCampaigns] = useState([]);
-  const {
-    address,
+  const { contract } = useStateContext();
+  const { data, isLoading: isLoadingCampaigns } = useContractRead(
     contract,
-    getCampaigns,
-    campaignContract,
-  } = useStateContext();
-  const fetchCampaigns = async () => {
-    setIsLoading(true);
-    const data = await getCampaigns();
-    setCampaigns(data);
-    setIsLoading(false);
-  };
+    "getDeployedCampaigns"
+  );
   useEffect(() => {
-    if (contract && campaignContract) {
-      try {
-        fetchCampaigns();
-      } catch (err) {
-        console.error(err);
-      }
+    if (contract && data) {
+      setCampaigns(data);
     }
-  }, [address, contract, campaignContract]);
+  }, [data]);
   return (
     <div>
-      {isLoading ? (
+      {isLoadingCampaigns ? (
         <Loader />
       ) : (
         <ul>
