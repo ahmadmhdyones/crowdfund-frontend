@@ -5,9 +5,8 @@ import CustomButton from "../../src/components/CustomButton";
 import { checkIfImage } from "../../src/utils/index";
 import FormField from "../../src/components/FormField";
 import Loader from "../../src/components/Loader";
-import { useStateContext } from "../../src/context";
+import { CampaignAPI } from "../../src/apis/campaignAPI";
 const CreateCampaign = () => {
-  const { publishCampaign } = useStateContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
@@ -29,16 +28,15 @@ const CreateCampaign = () => {
     checkIfImage(form.image, async (exists) => {
       if (exists) {
         setIsLoading(true);
-        await publishCampaign({
-          ...form,
-
-          deadline: new Date(form.deadline).getTime(),
-          //exchanging to Wei
-          target: ethers.utils.parseUnits(form.target, 18).toString(),
-          min: ethers.utils.parseUnits(form.min, 18).toString(),
-        });
-        setIsLoading(false);
-        router.push("/");
+        try {
+          const response = await CampaignAPI.create(form);
+          console.log(response);
+          setIsLoading(false);
+          router.push("/my-campaigns");
+        } catch (err) {
+          setIsLoading(false);
+          console.log(err);
+        }
       } else {
         alert("Provide valid image URL");
         setForm({ ...form, image: "" });
@@ -140,3 +138,12 @@ const CreateCampaign = () => {
 };
 
 export default CreateCampaign;
+
+// await publishCampaign({
+//   ...form,
+
+//   deadline: new Date(form.deadline).getTime(),
+//   //exchanging to Wei
+//   target: ethers.utils.parseUnits(form.target, 18).toString(),
+//   min: ethers.utils.parseUnits(form.min, 18).toString(),
+// });
