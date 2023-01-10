@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import {
-  useContract,
-  useContractRead,
-  useContractWrite,
-} from "@thirdweb-dev/react";
+import { useContract, useContractWrite } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import { calculateBarPercentage, daysLeft } from "../../src/utils/index";
@@ -13,52 +9,22 @@ import CustomButton from "../../src/components/CustomButton";
 import Loader from "../../src/components/Loader";
 import Cookies from "js-cookie";
 import { ContributionAPI } from "../../src/apis/contributionAPI";
-const CampaignDetailed = () => {
+import { CampaignAPI } from "../../src/apis/campaignAPI";
+const CampaignDetailed = (props) => {
   const token = Cookies.get("token");
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { address } = router.query;
+  const { contract } = useContract(address);
+  const campaign = props.response;
   address;
-  const [campaign, setCampaign] = useState([]);
-  const [remainingDays, setRemainingDays] = useState(0);
+  console.log(campaign);
+  const remainingDays = daysLeft(campaign.endAt);
   const [amount, setAmount] = useState("");
-  const {
-    contract,
-    isLoading: isLoadingContract,
-    error,
-  } = useContract(address);
 
-  const { data, isLoading: isLoadingSummary } = useContractRead(
-    contract,
-    "getSummary"
-  );
   const { mutateAsync: pledge, isLoading: isLoadingPledge } = useContractWrite(
     contract,
     "pledge"
   );
-  useEffect(() => {
-    setIsLoading(true);
-    if (data) {
-      const fixedCampaign = {
-        owner: data[0],
-        name: data[1],
-        title: data[2],
-        description: data[3],
-        image: data[4],
-        goal: ethers.utils.formatEther(data[5].toString()),
-        pledged: ethers.utils.formatEther(data[6].toString()),
-        balance: ethers.utils.formatEther(data[7].toString()),
-        endAt: data[8].toNumber(),
-        startAt: data[9].toNumber(),
-        minPledge: ethers.utils.formatEther(data[10].toString()),
-        countrequests: data[11].toNumber(),
-        countPledges: data[12].toNumber(),
-      };
-      setRemainingDays(daysLeft(fixedCampaign.endAt));
-      setIsLoading(false);
-      setCampaign(fixedCampaign);
-    }
-  }, [data]);
   const handleDonate = async () => {
     if (!token) {
       router.push("/login");
@@ -85,10 +51,11 @@ const CampaignDetailed = () => {
   };
   return (
     <>
-      {isLoading || isLoadingSummary || isLoadingContract || isLoadingPledge ? (
+      {isLoadingPledge ? (
         <Loader />
       ) : (
         <div>
+          <h1 className="text-white font-epilogue font-bold text-[30px]">{campaign.title}</h1>
           <div className="w-full flex md:flex-row flex-col mt-10 gap-[30px]">
             <div className="flex-1 flex-col">
               <Image
@@ -143,7 +110,7 @@ const CampaignDetailed = () => {
                   </div>
                   <div>
                     <h4 className="font-epilogue font-semibold text-[14px] text-white break-all">
-                      {campaign.owner}
+                      {campaign.name}
                     </h4>
                     <p className="mt-[4px] font-epilogue font-normal text-[12px] text-[#808191]">
                       10 Campaigns
@@ -212,3 +179,16 @@ const CampaignDetailed = () => {
 };
 
 export default CampaignDetailed;
+
+export async function getServerSideProps(context) {
+  const address = context.params.address;
+  try {
+    const response = await CampaignAPI.getOne(address);
+    return {
+      props: { response },
+    };
+  } catch (err) {
+    console.log(err);
+    return { props: {} };
+  }
+}

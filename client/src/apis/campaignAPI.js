@@ -24,11 +24,18 @@ export const CampaignAPI = {
     });
     return response;
   },
-  get: async function () {
+  getAll: async function () {
     const response = await api.request({
       url: `api/campaigns/deployed`,
       method: "GET",
     });
     return response.data.data.campaigns;
+  },
+  getOne: async function (id) {
+    const response = await api.request({
+      url: `api/campaigns/deployed/${id}`,
+      method: "GET",
+    });
+    return response.data.data.campaign;
   },
 };
