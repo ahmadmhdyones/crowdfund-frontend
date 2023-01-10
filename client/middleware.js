@@ -6,7 +6,6 @@ export default function middleware(req) {
   // (req.nextUrl.pathname.startsWith("/"));
   for (let i = 0; i < protectedRoutes.length; i++) {
     if (req.nextUrl.pathname.startsWith(protectedRoutes[i]) && !token) {
-      console.log(true);
       req.cookies.delete("token");
       const response = NextResponse.redirect(new URL("/login", req.url));
       req.cookies.delete("token");
