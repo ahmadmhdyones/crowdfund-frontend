@@ -1,8 +1,11 @@
 import React from "react";
 
 import { daysLeft } from "../utils";
-
+import Image from "next/image";
+import CustomButton from "./CustomButton";
+import Link from "next/link";
 const FundCard = ({
+  _id,
   state,
   title,
   description,
@@ -11,23 +14,28 @@ const FundCard = ({
   pledged,
   image,
   handleClick,
+  handleDeployClick,
+  handleNewRequestsClick,
+  handleRequestsClick,
 }) => {
   const remainingDays = daysLeft(endAt);
   return (
-    <div
-      className="sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer"
-      onClick={handleClick}
-    >
-      <img
+    <div className="sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] ">
+      <Image
         src={image}
+        width={1000}
+        height={1000}
         alt="fund"
-        className="w-full h-[158px] object-cover rounded-[15px]"
+        className="w-full h-[158px] object-cover rounded-[15px] cursor-pointer"
+        onClick={handleClick}
       />
 
       <div className="flex flex-col p-4">
         <div className="flex flex-row items-center mb-[18px]">
-          <img
+          <Image
             src={"/type.svg"}
+            height={1000}
+            width={1000}
             alt="tag"
             className="w-[17px] h-[17px] object-contain"
           />
@@ -66,8 +74,10 @@ const FundCard = ({
 
         <div className="flex items-center mt-[20px] gap-[12px]">
           <div className="w-[30px] h-[30px] rounded-full flex justify-center items-center bg-[#13131a]">
-            <img
+            <Image
               src={"/thirdweb.svg"}
+              height={1000}
+              width={1000}
               alt="user"
               className="w-1/2 h-1/2 object-contain"
             />
@@ -75,7 +85,35 @@ const FundCard = ({
           <p className="flex-1 font-epilogue font-normal text-[12px] text-[#808191] truncate">
             status: <span className="text-[#b2b3bd]">{state}</span>
           </p>
+          {state === "approved" && (
+            <CustomButton
+              btnType="button"
+              title="Deploy"
+              styles="bg-[#1dc071]"
+              onClick={handleDeployClick}
+            />
+          )}
         </div>
+        {state === "deployed" && (
+          <div className="text-center">
+            <br />
+            <Link href={`/my-campaigns/${_id}/requests`} className="block">
+              <CustomButton
+                btnType="button"
+                title="Requests"
+                styles="bg-[#1dc071]"
+              />
+            </Link>
+            <br />
+            <Link href={`/my-campaigns/${_id}/new-request`} className="block">
+              <CustomButton
+                btnType="button"
+                title="New Requests"
+                styles="bg-[#8C6DFD]"
+              />
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

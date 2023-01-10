@@ -34,7 +34,7 @@ export default Home;
 
 export async function getServerSideProps() {
   try {
-    const response = await CampaignAPI.getAll();
+    const response = await CampaignAPI.getAllDeployed();
     return {
       props: { response },
     };

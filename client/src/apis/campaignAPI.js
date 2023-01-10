@@ -1,4 +1,3 @@
-import axios from "axios";
 import { api } from "./configs/axiosConfigs";
 
 export const CampaignAPI = {
@@ -24,18 +23,28 @@ export const CampaignAPI = {
     });
     return response;
   },
-  getAll: async function () {
+  getAllDeployed: async function () {
     const response = await api.request({
       url: `api/campaigns/deployed`,
       method: "GET",
     });
     return response.data.data.campaigns;
   },
-  getOne: async function (id) {
+  getOneDeployed: async function (id) {
     const response = await api.request({
       url: `api/campaigns/deployed/${id}`,
       method: "GET",
     });
     return response.data.data.campaign;
+  },
+  getMyCampaigns: async function (token) {
+    const response = await api.request({
+      url: `api/campaigns/mine`,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data.campaigns;
   },
 };

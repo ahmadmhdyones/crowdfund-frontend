@@ -9,4 +9,14 @@ export const ContributionAPI = {
     });
     return response;
   },
+  getAll: async function (token) {
+    const response = await api.request({
+      url: `api/contributions/mine`,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data.contributions;
+  },
 };
