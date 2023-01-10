@@ -4,22 +4,24 @@ import { ConsultantAPI } from "../../src/apis/consultantAPI";
 import FundCard from "../../src/components/FundCard";
 const PendingCampaigns = (props) => {
   console.log(props.response);
-  const campaigns = props.response;
+  const filteredCampaigns = props.response.filter(
+    (campaign) => campaign.state === "pending"
+  );
   const { role } = useStateContext();
   if (role) {
     return (
       <div>
         <h1 className="font-epilogue font-semibold text-[18px] text-white text-left">
-          All Campaigns {campaigns.length}
+          All Campaigns {filteredCampaigns.length}
         </h1>
         <div className="flex flex-wrap mt-[20px] gap-[26px]">
-          {campaigns.length === 0 && (
+          {filteredCampaigns.length === 0 && (
             <p className="font-epilogue font-semibold text-[14px] leading-[30px] text-[#818183]">
               There are no campaigns yet!
             </p>
           )}
-          {campaigns.length > 0 &&
-            campaigns.map((campaign) => (
+          {filteredCampaigns.length > 0 &&
+            filteredCampaigns.map((campaign) => (
               <FundCard
                 key={campaign}
                 {...campaign}
