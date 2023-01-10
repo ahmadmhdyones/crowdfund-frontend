@@ -1,16 +1,15 @@
-import React, { useContext, createContext, useState, useEffect } from "react";
+import React, { useContext, createContext, useState } from "react";
 import {
   useAddress,
   useContract,
   useMetamask,
   useContractWrite,
 } from "@thirdweb-dev/react";
-import { ethers } from "ethers";
-
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   const [token, setToken] = useState(null);
+  const [role, setRole] = useState(false);
 
   const address = useAddress();
   const connect = useMetamask();
@@ -44,8 +43,6 @@ export const StateContextProvider = ({ children }) => {
     }
   };
 
-  
-
   return (
     <StateContext.Provider
       value={{
@@ -55,6 +52,8 @@ export const StateContextProvider = ({ children }) => {
         connect,
         token,
         setToken,
+        role,
+        setRole,
       }}
     >
       {children}
@@ -63,10 +62,3 @@ export const StateContextProvider = ({ children }) => {
 };
 
 export const useStateContext = () => useContext(StateContext);
-//uint256 _goal,
-// uint256 _end,
-// uint256 _minimum,
-// string memory _name,
-// string memory _title,
-// string memory _description,
-// string memory _image

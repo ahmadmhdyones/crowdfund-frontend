@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 const token = Cookies.get("token");
-console.log(token)
+console.log(token);
 export const api = axios.create({
   headers: {
     Authorization: `Bearer ${token}`,

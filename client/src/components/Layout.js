@@ -7,11 +7,7 @@ import { useRouter } from "next/router";
 import { useStateContext } from "../context";
 const Layout = ({ children }) => {
   const router = useRouter();
-  const { token, setToken } = useStateContext();
-  useEffect(() => {
-    setToken(Cookies.get("token"));
-    console.log(token);
-  }, []);
+  const { token } = useStateContext();
   return (
     <div className="relative sm:p-8 p-4 bg-[#13131a] min-h-screen flex flex-row">
       <div className="sm:flex hidden mr-10 relative">

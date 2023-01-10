@@ -5,8 +5,6 @@ import * as Yup from "yup";
 import Layout from "../../src/components/Layout";
 import { useLogin } from "../../src/hooks/useLogin";
 import { useRouter } from "next/router";
-import Cookies from "js-cookie";
-import { useStateContext } from "../../src/context";
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
     .email()
@@ -23,7 +21,6 @@ const LoginSchema = Yup.object().shape({
 
 const Login = () => {
   const router = useRouter();
-
   const login = useLogin();
   return (
     <Formik

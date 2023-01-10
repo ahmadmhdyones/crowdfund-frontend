@@ -2,12 +2,14 @@ import Cookies from "js-cookie";
 import { LoginAPI } from "../apis/loginAPI";
 import { useStateContext } from "../context";
 export const useLogin = () => {
-  const { setToken } = useStateContext();
+  const { setToken, setRole } = useStateContext();
   const login = async (values) => {
     const user = await LoginAPI.login(values);
     if (user) {
       Cookies.set("token", user.data.user.token);
+      Cookies.set("role", user.data.user.isConsultant);
       setToken(user.data.user.token);
+      setRole(user.data.user.isConsultant);
     }
   };
   return login;

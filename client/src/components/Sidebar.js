@@ -4,7 +4,7 @@ import Image from "next/image";
 import { navLinks } from "../constants/index";
 import { useRouter } from "next/router";
 import { useLogout } from "../hooks/useLogout";
-
+import { useStateContext } from "../context";
 const Icon = ({ styles, name, isActive, disabled, handleClick }) => {
   return (
     <div
@@ -37,6 +37,7 @@ const Icon = ({ styles, name, isActive, disabled, handleClick }) => {
 };
 
 const Sidebar = () => {
+  const { role } = useStateContext();
   const logout = useLogout();
   const router = useRouter();
   const val =
@@ -68,12 +69,10 @@ const Sidebar = () => {
             />
           ))}
         </div>
-        <Icon styles="bg-[#1c1c24] shadow-secondary" name="sun" />
+        {role && <Icon styles="bg-[#1c1c24] shadow-secondary" name="sun" />}
       </div>
     </div>
   );
 };
 
 export default Sidebar;
-
-
