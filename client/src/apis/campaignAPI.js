@@ -1,7 +1,15 @@
+import axios from "axios";
 import { api } from "./configs/axiosConfigs";
 
 export const CampaignAPI = {
-  create: async function ({ title, description, image, target, deadline, min }) {
+  create: async function ({
+    title,
+    description,
+    image,
+    target,
+    deadline,
+    min,
+  }) {
     const response = await api.request({
       url: `api/campaigns`,
       method: "POST",
@@ -15,5 +23,12 @@ export const CampaignAPI = {
       },
     });
     return response;
+  },
+  get: async function () {
+    const response = await api.request({
+      url: `api/campaigns/deployed`,
+      method: "GET",
+    });
+    return response.data.data.campaigns;
   },
 };

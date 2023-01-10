@@ -31,7 +31,6 @@ const Requests = () => {
     address
   );
   useEffect(() => {
-    if (isOwner) console.log(isOwner);
     if (isOwner === false) {
       // router.push("/");
     }

@@ -35,4 +35,5 @@ export const protectedRoutes = [
   "/profile",
   "/my-campaigns",
   "/my-contributions",
+  "/consultant",
 ];

@@ -11,11 +11,14 @@ import { calculateBarPercentage, daysLeft } from "../../src/utils/index";
 import CountBox from "../../src/components/CountBox";
 import CustomButton from "../../src/components/CustomButton";
 import Loader from "../../src/components/Loader";
+import Cookies from "js-cookie";
+import { ContributionAPI } from "../../src/apis/contributionAPI";
 const CampaignDetailed = () => {
+  const token = Cookies.get("token");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { address } = router.query;
-  (address);
+  address;
   const [campaign, setCampaign] = useState([]);
   const [remainingDays, setRemainingDays] = useState(0);
   const [amount, setAmount] = useState("");
@@ -51,40 +54,33 @@ const CampaignDetailed = () => {
         countrequests: data[11].toNumber(),
         countPledges: data[12].toNumber(),
       };
-      //       manager: manager, 0
-      // name: name, 1
-      // title: title, 2
-      // description: description, 3
-      // image: image, 4
-      // goal: goal, 5
-      // pledged: pledged, 6
-      // balance: address(this).balance, 7
-      // startAt: startAt, 8
-      // endAt: endAt, 9
-      // minPledge: minPledge, 10
-      // countrequests: requests.length, 11
-      // countPledges: countPledges 12
-
       setRemainingDays(daysLeft(fixedCampaign.endAt));
-
       setIsLoading(false);
       setCampaign(fixedCampaign);
     }
   }, [data]);
   const handleDonate = async () => {
-    try {
-      setIsLoading(true);
-      const data = await pledge([
-        {
-          gasLimit: 1000000, // override default gas limit
-          value: ethers.utils.parseEther(amount), // send 0.1 ether with the contract call
-        },
-      ]);
-      console.info("contract call successs", data);
-      router.push("/");
-      setIsLoading(false);
-    } catch (err) {
-      console.error("contract call failure", err);
+    if (!token) {
+      router.push("/login");
+    } else {
+      try {
+        const response = await ContributionAPI.fund({
+          campaignId: address,
+          amount,
+        });
+        setIsLoading(true);
+        const data = await pledge([
+          {
+            gasLimit: 1000000, // override default gas limit
+            value: ethers.utils.parseEther(amount), // send 0.1 ether with the contract call
+          },
+        ]);
+        console.info("contract call successs", data);
+        router.push("/");
+        setIsLoading(false);
+      } catch (err) {
+        console.error("contract call failure", err);
+      }
     }
   };
   return (

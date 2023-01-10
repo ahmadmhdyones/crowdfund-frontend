@@ -30,7 +30,6 @@ const CreateCampaign = () => {
         setIsLoading(true);
         try {
           const response = await CampaignAPI.create(form);
-          console.log(response);
           setIsLoading(false);
           router.push("/my-campaigns");
         } catch (err) {
@@ -114,6 +113,7 @@ const CreateCampaign = () => {
             inputType="date"
             value={form.deadline}
             handleChange={(e) => handleFormFieldChange("deadline", e)}
+            isDate={true}
           />
         </div>
 
