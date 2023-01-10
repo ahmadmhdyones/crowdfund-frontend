@@ -4,7 +4,7 @@ import FundCard from "../src/components/FundCard";
 import { CampaignAPI } from "../src/apis/campaignAPI";
 const Home = (props) => {
   let campaigns = props.response;
-  console.log(campaigns);
+  console.log(campaigns[0]["_id"]);
   const router = useRouter();
   return (
     <div>
@@ -22,7 +22,7 @@ const Home = (props) => {
             <FundCard
               key={campaign["_id"]}
               {...campaign}
-              handleClick={() => router.push(`/campaign/${campaign}`)}
+              handleClick={() => router.push(`/campaign/${campaign["_id"]}`)}
             />
           ))}
       </div>
@@ -34,7 +34,7 @@ export default Home;
 
 export async function getServerSideProps() {
   try {
-    const response = await CampaignAPI.get();
+    const response = await CampaignAPI.getAll();
     return {
       props: { response },
     };
