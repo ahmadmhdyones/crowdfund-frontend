@@ -138,11 +138,4 @@ const CreateCampaign = () => {
 
 export default CreateCampaign;
 
-// await publishCampaign({
-//   ...form,
 
-//   deadline: new Date(form.deadline).getTime(),
-//   //exchanging to Wei
-//   target: ethers.utils.parseUnits(form.target, 18).toString(),
-//   min: ethers.utils.parseUnits(form.min, 18).toString(),
-// });

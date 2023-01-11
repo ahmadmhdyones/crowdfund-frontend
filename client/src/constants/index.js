@@ -11,10 +11,10 @@ export const navLinks = [
     name: "payment",
     link: "/my-campaigns",
   },
-  {
-    name: "withdraw",
-    link: "/withdraw",
-  },
+  // {
+  //   name: "withdraw",
+  //   link: "/withdraw",
+  // },
   {
     name: "my-contributions",
     link: "/my-contributions",

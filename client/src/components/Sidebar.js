@@ -43,7 +43,7 @@ const Sidebar = () => {
   const val =
     router.pathname.slice(1) === "" ? "dashboard" : router.pathname.slice(1);
   const [isActive, setIsActive] = useState(val);
-  console.log(isActive)
+  console.log(isActive);
   return (
     <div className="flex justify-between items-center flex-col sticky top-5 h-[93vh]">
       <Link href={"/"}>
@@ -70,7 +70,11 @@ const Sidebar = () => {
             />
           ))}
         </div>
-        {role && <Icon styles="bg-[#1c1c24] shadow-secondary" name="sun" />}
+        {role && (
+          <Link href="/consultant/pending-campaigns">
+            <Icon styles="bg-[#1c1c24] shadow-secondary" name="sun" />
+          </Link>
+        )}
       </div>
     </div>
   );

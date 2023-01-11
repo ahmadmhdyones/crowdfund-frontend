@@ -2,7 +2,9 @@ import React from "react";
 import { useStateContext } from "../../src/context";
 import { ConsultantAPI } from "../../src/apis/consultantAPI";
 import FundCard from "../../src/components/FundCard";
+import { useRouter } from "next/router";
 const PendingCampaigns = (props) => {
+  const router = useRouter();
   console.log(props.response);
   const filteredCampaigns = props.response.filter(
     (campaign) => campaign.state === "pending"
