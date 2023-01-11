@@ -17,7 +17,6 @@ const CampaignDetailed = (props) => {
   const { contract } = useContract(address);
   const campaign = props.response;
   address;
-  console.log(campaign);
   const remainingDays = daysLeft(campaign.endAt);
   const [amount, setAmount] = useState("");
 

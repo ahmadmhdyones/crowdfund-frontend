@@ -38,6 +38,7 @@ export const StateContextProvider = ({ children }) => {
         form.deadline.toString(), //unix based timestamp
         form.min,
       ]);
+      return data;
     } catch (err) {
       console.error(err);
     }

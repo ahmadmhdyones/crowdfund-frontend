@@ -2,9 +2,10 @@ import React from "react";
 import { ContributionAPI } from "../../src/apis/contributionAPI";
 import { useRouter } from "next/router";
 import FundCard from "../../src/components/FundCard";
+import CustomButton from "../../src/components/CustomButton";
+import HandleRefund from "../../src/components/HandleRefund";
 const MyContributions = (props) => {
   const campaigns = props.response;
-  console.log(campaigns)
   const router = useRouter();
   return (
     <div>
@@ -19,11 +20,22 @@ const MyContributions = (props) => {
         )}
         {campaigns.length > 0 &&
           campaigns.map((campaign) => (
-            <FundCard
+            <div
+              className="flex flex-col gap-[10px] justify-center"
               key={campaign["_id"]}
-              {...campaign}
-              handleClick={() => router.push(`/campaign/${campaign["_id"]}`)}
-            />
+            >
+              <FundCard
+                {...campaign}
+                handleClick={() =>
+                  router.push(`/my-contributions/${campaign["_id"]}/requests`)
+                }
+              />
+              <HandleRefund
+                title="Refund"
+                styles="bg-[#c92a2a]"
+                id={campaign["_id"]}
+              />
+            </div>
           ))}
       </div>
     </div>

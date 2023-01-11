@@ -2,6 +2,7 @@ import React from "react";
 import { CampaignAPI } from "../../src/apis/campaignAPI";
 import { useRouter } from "next/router";
 import FundCard from "../../src/components/FundCard";
+import HandleDeploy from "../../src/components/HandleDeploy";
 const MyCampaigns = (props) => {
   const campaigns = props.response;
   const pendingCampaigns = campaigns.filter(
@@ -23,8 +24,8 @@ const MyCampaigns = (props) => {
   };
   const handleRequestsClick = () => {
     router.push(`/my-campaigns/${campaign["_id"]}/requests`);
-  }
-    
+  };
+
   return (
     <>
       <div>
@@ -34,7 +35,7 @@ const MyCampaigns = (props) => {
         <div className="flex flex-wrap mt-[20px] gap-[26px]">
           {deployedCampaigns.length === 0 && (
             <p className="font-epilogue font-semibold text-[14px] leading-[30px] text-[#818183]">
-              You have not created any campigns yet
+              You have not deployed any campigns yet
             </p>
           )}
           {deployedCampaigns.length > 0 &&
@@ -89,12 +90,30 @@ const MyCampaigns = (props) => {
           )}
           {approvedCampaigns.length > 0 &&
             approvedCampaigns.map((campaign) => (
-              <FundCard
+              <div
+                className="flex flex-col gap-[10px] justify-center"
                 key={campaign["_id"]}
-                {...campaign}
-                handleClick={() => router.push(`/campaign/${campaign["_id"]}`)}
-                handleDeployClick={handleDeploy}
-              />
+              >
+                <FundCard
+                  {...campaign}
+                  handleClick={() =>
+                    router.push(`/campaign/${campaign["_id"]}`)
+                  }
+                />
+                <HandleDeploy
+                  buttonTitle="Deploy"
+                  styles={"bg-[purple]"}
+                  btnType="button"
+                  ///////
+                  name={campaign.name}
+                  title={campaign.title}
+                  description={campaign.description}
+                  image={campaign.image}
+                  target={campaign.goal}
+                  deadline={campaign.endAt}
+                  min={campaign.minPledge}
+                />
+              </div>
             ))}
         </div>
       </div>
@@ -117,7 +136,6 @@ const MyCampaigns = (props) => {
                 key={campaign["_id"]}
                 {...campaign}
                 handleClick={() => router.push(`/campaign/${campaign["_id"]}`)}
-                handleDeployClick={handleDeploy}
               />
             ))}
         </div>

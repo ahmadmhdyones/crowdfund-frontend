@@ -4,7 +4,6 @@ import FundCard from "../src/components/FundCard";
 import { CampaignAPI } from "../src/apis/campaignAPI";
 const Home = (props) => {
   let campaigns = props.response;
-  console.log(campaigns[0]["_id"]);
   const router = useRouter();
   return (
     <div>

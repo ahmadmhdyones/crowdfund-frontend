@@ -85,16 +85,16 @@ const FundCard = ({
           <p className="flex-1 font-epilogue font-normal text-[12px] text-[#808191] truncate">
             status: <span className="text-[#b2b3bd]">{state}</span>
           </p>
-          {state === "approved" && (
+          {/* {state === "approved" && (
             <CustomButton
               btnType="button"
               title="Deploy"
               styles="bg-[#1dc071]"
               onClick={handleDeployClick}
             />
-          )}
+          )} */}
         </div>
-        {state === "deployed" && (
+        {/* {state === "deployed" && (
           <div className="text-center">
             <br />
             <Link href={`/my-campaigns/${_id}/requests`} className="block">
@@ -113,7 +113,7 @@ const FundCard = ({
               />
             </Link>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

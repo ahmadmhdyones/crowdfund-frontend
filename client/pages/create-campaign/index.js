@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { ethers } from "ethers";
 import CustomButton from "../../src/components/CustomButton";
 import { checkIfImage } from "../../src/utils/index";
 import FormField from "../../src/components/FormField";
