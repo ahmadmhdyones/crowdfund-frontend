@@ -3,20 +3,29 @@ import Image from "next/image";
 import { useContract, useContractWrite } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
-import { calculateBarPercentage, daysLeft } from "../../src/utils/index";
+import {
+  calculateBarPercentage,
+  daysLeft,
+  displayError,
+} from "../../src/utils/index";
 import CountBox from "../../src/components/CountBox";
 import CustomButton from "../../src/components/CustomButton";
 import Loader from "../../src/components/Loader";
 import Cookies from "js-cookie";
 import { ContributionAPI } from "../../src/apis/contributionAPI";
 import { CampaignAPI } from "../../src/apis/campaignAPI";
+import { useStateContext } from "../../src/context/index";
+import { ConsultantAPI } from "../../src/apis/consultantAPI";
+import Swal from "sweetalert2";
 const CampaignDetailed = (props) => {
   const token = Cookies.get("token");
+  const role = Cookies.get("role");
   const router = useRouter();
-  const { address } = router.query;
-  const { contract } = useContract(address);
+  const [isLoading, setIsLoading] = useState(false);
   const campaign = props.response;
-  address;
+  console.log(campaign);
+  const campaignAddress = campaign.address;
+  const { contract } = useContract(campaignAddress ? campaignAddress : null);
   const remainingDays = daysLeft(campaign.endAt);
   const [amount, setAmount] = useState("");
 
@@ -30,7 +39,7 @@ const CampaignDetailed = (props) => {
     } else {
       try {
         const response = await ContributionAPI.fund({
-          campaignId: address,
+          campaignId: campaign["_id"],
           amount,
         });
         setIsLoading(true);
@@ -90,7 +99,7 @@ const CampaignDetailed = (props) => {
                 title={`Raised of ${campaign.goal}`}
                 value={campaign.pledged}
               />
-              <CountBox title="Total Backers" value={campaign.countPledges} />
+              <CountBox title="Total Backers" value={campaign.contributors} />
             </div>
           </div>
 
@@ -174,6 +183,54 @@ const CampaignDetailed = (props) => {
                 </div>
               </div>
             )}
+            {role && campaign.state !== "deployed" && (
+              <div>
+                <CustomButton
+                  btnType="button"
+                  title="Accept"
+                  styles="w-full bg-[#4acd8d]"
+                  handleClick={async () => {
+                    try {
+                      await ConsultantAPI.updateStatus(
+                        router.query.address,
+                        "approved",
+                        token
+                      );
+                      Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Accepted Successfully",
+                      });
+                      router.push("/consultant/pending-campaigns");
+                    } catch (err) {
+                      displayError(err);
+                    }
+                  }}
+                />
+                <CustomButton
+                  btnType="button"
+                  title="Reject"
+                  styles="w-full mt-[20px] bg-[#c92a2a]"
+                  handleClick={async () => {
+                    try {
+                      await ConsultantAPI.updateStatus(
+                        router.query.address,
+                        "rejected",
+                        token
+                      );
+                      Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Rejected Successfully",
+                      });
+                      router.push("/consultant/pending-campaigns");
+                    } catch (err) {
+                      displayError(err);
+                    }
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -186,12 +243,13 @@ export default CampaignDetailed;
 export async function getServerSideProps(context) {
   const address = context.params.address;
   try {
-    const response = await CampaignAPI.getOneDeployed(address);
+    const response = await CampaignAPI.getCampaign(address);
+
     return {
       props: { response },
     };
   } catch (err) {
-    console.log(err);
+    console.log(err.response.data.error);
     return { props: {} };
   }
 }

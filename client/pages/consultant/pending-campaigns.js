@@ -5,7 +5,7 @@ import FundCard from "../../src/components/FundCard";
 import { useRouter } from "next/router";
 const PendingCampaigns = (props) => {
   const router = useRouter();
-  console.log(props.response);
+  
   const filteredCampaigns = props.response.filter(
     (campaign) => campaign.state === "pending"
   );
@@ -27,7 +27,7 @@ const PendingCampaigns = (props) => {
               <FundCard
                 key={campaign}
                 {...campaign}
-                handleClick={() => router.push(`/campaign/${campaign}`)}
+                handleClick={() => router.push(`/campaign/${campaign["_id"]}`)}
               />
             ))}
         </div>

@@ -4,6 +4,7 @@ import { daysLeft } from "../utils";
 import Image from "next/image";
 import CustomButton from "./CustomButton";
 import Link from "next/link";
+import { useRouter } from "next/router";
 const FundCard = ({
   _id,
   state,
@@ -14,10 +15,12 @@ const FundCard = ({
   pledged,
   image,
   handleClick,
+  address,
   handleDeployClick,
   handleNewRequestsClick,
   handleRequestsClick,
 }) => {
+  const router = useRouter();
   const remainingDays = daysLeft(endAt);
   return (
     <div className="sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] ">
@@ -62,19 +65,22 @@ const FundCard = ({
               Raised of {goal}
             </p>
           </div>
-          {remainingDays > 0 ? <div className="flex flex-col">
-            <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
-              {remainingDays}
-            </h4>
-            <p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">
-              Days Left
-            </p>
-          </div> : <div className="flex flex-col">
-            <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
-              It's Over
-            </h4>
-            
-          </div>}
+          {remainingDays > 0 ? (
+            <div className="flex flex-col">
+              <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
+                {remainingDays}
+              </h4>
+              <p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">
+                Days Left
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col">
+              <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
+                It's Over
+              </h4>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center mt-[20px] gap-[12px]">
@@ -99,26 +105,30 @@ const FundCard = ({
             />
           )} */}
         </div>
-        {/* {state === "deployed" && (
-          <div className="text-center">
-            <br />
-            <Link href={`/my-campaigns/${_id}/requests`} className="block">
-              <CustomButton
-                btnType="button"
-                title="Requests"
-                styles="bg-[#1dc071]"
-              />
-            </Link>
-            <br />
-            <Link href={`/my-campaigns/${_id}/new-request`} className="block">
-              <CustomButton
-                btnType="button"
-                title="New Requests"
-                styles="bg-[#8C6DFD]"
-              />
-            </Link>
-          </div>
-        )} */}
+        {state === "deployed" &&
+          router.pathname.startsWith("/my-campaigns") && (
+            <div className="text-center">
+              <br />
+              <Link
+                href={`/my-campaigns/${address}/requests`}
+                className="block"
+              >
+                <CustomButton
+                  btnType="button"
+                  title="Requests"
+                  styles="bg-[#1dc071]"
+                />
+              </Link>
+              <br />
+              <Link href={`/my-campaigns/${address}/new-request`} className="block">
+                <CustomButton
+                  btnType="button"
+                  title="New Requests"
+                  styles="bg-[#8C6DFD]"
+                />
+              </Link>
+            </div>
+          )}
       </div>
     </div>
   );

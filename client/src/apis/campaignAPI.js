@@ -1,14 +1,10 @@
 import { api } from "./configs/axiosConfigs";
 
 export const CampaignAPI = {
-  create: async function ({
-    title,
-    description,
-    image,
-    target,
-    deadline,
-    min,
-  }) {
+  create: async function (
+    { title, description, image, target, deadline, min },
+    token
+  ) {
     const response = await api.request({
       url: `api/campaigns`,
       method: "POST",
@@ -20,6 +16,9 @@ export const CampaignAPI = {
         endAt: deadline,
         minPledge: min,
       },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response;
   },
@@ -30,11 +29,12 @@ export const CampaignAPI = {
     });
     return response.data.data.campaigns;
   },
-  getOneDeployed: async function (id) {
+  getCampaign: async function (id) {
     const response = await api.request({
-      url: `api/campaigns/deployed/${id}`,
+      url: `api/campaigns/${id}`,
       method: "GET",
     });
+    console.log(response);
     return response.data.data.campaign;
   },
   getMyCampaigns: async function (token) {
@@ -46,5 +46,16 @@ export const CampaignAPI = {
       },
     });
     return response.data.data.campaigns;
+  },
+  addAddress: async function (id, address, token) {
+    const response = await api.request({
+      url: `api/campaigns/deployed`,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: { id, address },
+    });
+    return response;
   },
 };

@@ -45,7 +45,14 @@ const NewRequest = () => {
       router.push(`/my-campaigns/${router.query.address}/requests`);
       console.info("contract call successs", data);
     } catch (err) {
-      console.error("contract call failure", err);
+      Swal.fire({
+        title: "Failed!",
+        text: `Campaign has not succeeded yet!`,
+        imageUrl: "/thirdweb.svg",
+        imageWidth: 150,
+        imageHeight: 150,
+        imageAlt: "logo",
+      });
     }
   };
 

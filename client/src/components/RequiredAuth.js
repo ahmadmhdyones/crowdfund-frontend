@@ -3,9 +3,10 @@ import { useStateContext } from "../context";
 import Cookies from "js-cookie";
 const RequiredAuth = ({ children }) => {
   const { setToken, setRole } = useStateContext();
+  const token = Cookies.get("token");
   useEffect(() => {
-    setToken(Cookies.get("token"));
-    setRole(Cookies.get("role") ? JSON.parse(Cookies.get("role")) : null);
+    setToken(token);
+    setRole(Cookies.get("role") ? JSON.parse(Cookies.get("role")) : false);
   }, []);
   return <>{children}</>;
 };

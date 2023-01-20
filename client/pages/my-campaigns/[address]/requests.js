@@ -24,7 +24,8 @@ const Requests = () => {
   const { address } = useStateContext();
   let rows;
   const router = useRouter();
-  const { contract } = useContract(router.query.address);
+  const contractAddress = router.query.address;
+  const { contract } = useContract(contractAddress);
   const { data: isOwner, isLoading: isLoadingOwner } = useContractRead(
     contract,
     "isOwner",
@@ -32,7 +33,7 @@ const Requests = () => {
   );
   useEffect(() => {
     if (isOwner === false) {
-      // router.push("/");
+      router.push("/");
     }
   }, [isOwner]);
   const { data, isLoading: isLoadingRequest } = useContractRead(

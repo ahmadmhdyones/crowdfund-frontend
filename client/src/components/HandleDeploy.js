@@ -1,12 +1,19 @@
 import React from "react";
 import { useStateContext } from "../context/index";
 import { ethers } from "ethers";
+import { useContract, useContractRead } from "@thirdweb-dev/react";
+import { displayError, displaySuccess } from "../utils";
+import Swal from "sweetalert2";
+import { useRouter } from "next/router";
+import { CampaignAPI } from "../apis/campaignAPI";
+
 const HandleDeploy = ({
   isDisabled,
   buttonTitle,
   styles,
   btnType,
   ///////
+  id,
   name,
   title,
   description,
@@ -15,7 +22,12 @@ const HandleDeploy = ({
   deadline,
   min,
 }) => {
+  const router = useRouter();
+  const { token } = useStateContext();
   const { publishCampaign } = useStateContext();
+  const { contract } = useContract(
+    "0xC01cb8f8EA2D8324cb8d302dD4469278E39ff536"
+  );
 
   const handleClick = async () => {
     console.log(
@@ -38,9 +50,18 @@ const HandleDeploy = ({
     };
     try {
       const data = await publishCampaign(form);
-      console.info("contract call successs", data);
+      console.log("contract call successs", data);
+      if (data) {
+        // const campaign = await getDeployedCampaigns().slice(-1);
+        const campaigns = await contract.call("getDeployedCampaigns");
+        const oneCampaign = campaigns[campaigns.length - 1];
+        console.log("Campaigns: ", oneCampaign);
+        await CampaignAPI.addAddress(id, oneCampaign, token);
+        displaySuccess("Successfully Deployed!");
+        router.push("/my-campaigns");
+      }
     } catch (err) {
-      console.error("contract call failure", err);
+      console.log(err);
     }
   };
   return (

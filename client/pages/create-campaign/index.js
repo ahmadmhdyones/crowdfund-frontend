@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CustomButton from "../../src/components/CustomButton";
-import { checkIfImage } from "../../src/utils/index";
+import { checkIfImage, displayError } from "../../src/utils/index";
 import FormField from "../../src/components/FormField";
 import Loader from "../../src/components/Loader";
 import { CampaignAPI } from "../../src/apis/campaignAPI";
+import { useStateContext } from "../../src/context/index";
 const CreateCampaign = () => {
+  const { token } = useStateContext();
+  useEffect(() => {
+    console.log(token);
+  }, []);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
@@ -23,17 +28,18 @@ const CreateCampaign = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(token);
 
     checkIfImage(form.image, async (exists) => {
       if (exists) {
         setIsLoading(true);
         try {
-          const response = await CampaignAPI.create(form);
+          const response = await CampaignAPI.create(form, token);
           setIsLoading(false);
           router.push("/my-campaigns");
         } catch (err) {
           setIsLoading(false);
-          console.log(err);
+          displayError(err.response.data.message);
         }
       } else {
         alert("Provide valid image URL");
@@ -95,14 +101,14 @@ const CreateCampaign = () => {
           <FormField
             labelName="Goal *"
             placeholder="ETH 0.50"
-            inputType="text"
+            inputType="number"
             value={form.target}
             handleChange={(e) => handleFormFieldChange("target", e)}
           />
           <FormField
             labelName="Minimum Contribuation *"
             placeholder="ETH 0.01"
-            inputType="text"
+            inputType="number"
             value={form.min}
             handleChange={(e) => handleFormFieldChange("min", e)}
           />
@@ -137,5 +143,3 @@ const CreateCampaign = () => {
 };
 
 export default CreateCampaign;
-
-

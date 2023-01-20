@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import Layout from "../../src/components/Layout";
 import { RegisterAPI } from "../../src/apis/registerAPI";
 import { useRouter } from "next/router";
+import Swal from "sweetalert2";
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
     .min(2, "Too Short!")
@@ -52,7 +53,13 @@ const Register = () => {
           setSubmitting(false);
           router.push("/login");
         } catch (err) {
-          console.log(err);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `${err.response.data.message}`,
+            // footer: '<a href="">Why do I have this issue?</a>'
+          });
+          console.log(err.response.data.message);
         }
       }}
     >

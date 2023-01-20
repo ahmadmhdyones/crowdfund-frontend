@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import Layout from "../../src/components/Layout";
 import { useLogin } from "../../src/hooks/useLogin";
 import { useRouter } from "next/router";
+import Swal from "sweetalert2";
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
     .email()
@@ -36,7 +37,12 @@ const Login = () => {
           router.push("/");
           setSubmitting(false);
         } catch (err) {
-          console.log(err);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `${err.response.data.message}`,
+            // footer: '<a href="">Why do I have this issue?</a>'
+          });
         }
       }}
     >
@@ -89,6 +95,14 @@ const Login = () => {
                 title="Login"
                 styles="bg-[#1dc071]"
                 isDisabled={isSubmitting}
+              />
+            </div>
+            <div className="flex justify-center items-center mt-[10px]">
+              <CustomButton
+                btnType="button"
+                title="Register"
+                styles="bg-transparent"
+                handleClick={() => router.push("/register")}
               />
             </div>
           </Form>
