@@ -3,6 +3,7 @@ import { CampaignAPI } from "../../src/apis/campaignAPI";
 import { useRouter } from "next/router";
 import FundCard from "../../src/components/FundCard";
 import HandleDeploy from "../../src/components/HandleDeploy";
+import Loader from "../../src/components/Loader";
 const MyCampaigns = (props) => {
   const campaigns = props.response;
   let pendingCampaigns, approvedCampaigns, deployedCampaigns, rejectedCampaigns;

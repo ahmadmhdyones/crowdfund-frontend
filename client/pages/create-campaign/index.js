@@ -39,7 +39,7 @@ const CreateCampaign = () => {
           router.push("/my-campaigns");
         } catch (err) {
           setIsLoading(false);
-          displayError(err.response.data.message);
+          displayError(err);
         }
       } else {
         alert("Provide valid image URL");

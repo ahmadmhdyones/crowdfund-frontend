@@ -17,7 +17,7 @@ export const StateContextProvider = ({ children }) => {
 
   //getting the address(contract) of the FactoryCampaign contract
   const { contract } = useContract(
-    "0x944ac44717a2c9722C3A4A525A735884B0C04753"
+    "0xC01cb8f8EA2D8324cb8d302dD4469278E39ff536"
   );
 
   //getting the createCampaign function

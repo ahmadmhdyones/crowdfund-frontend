@@ -7,6 +7,7 @@ import {
   calculateBarPercentage,
   daysLeft,
   displayError,
+  displaySuccess,
 } from "../../src/utils/index";
 import CountBox from "../../src/components/CountBox";
 import CustomButton from "../../src/components/CustomButton";
@@ -14,7 +15,6 @@ import Loader from "../../src/components/Loader";
 import Cookies from "js-cookie";
 import { ContributionAPI } from "../../src/apis/contributionAPI";
 import { CampaignAPI } from "../../src/apis/campaignAPI";
-import { useStateContext } from "../../src/context/index";
 import { ConsultantAPI } from "../../src/apis/consultantAPI";
 import Swal from "sweetalert2";
 const CampaignDetailed = (props) => {
@@ -23,12 +23,11 @@ const CampaignDetailed = (props) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const campaign = props.response;
-  console.log(campaign);
   const campaignAddress = campaign.address;
   const { contract } = useContract(campaignAddress ? campaignAddress : null);
   const remainingDays = daysLeft(campaign.endAt);
   const [amount, setAmount] = useState("");
-
+  console.log(amount);
   const { mutateAsync: pledge, isLoading: isLoadingPledge } = useContractWrite(
     contract,
     "pledge"
@@ -38,10 +37,6 @@ const CampaignDetailed = (props) => {
       router.push("/login");
     } else {
       try {
-        const response = await ContributionAPI.fund({
-          campaignId: campaign["_id"],
-          amount,
-        });
         setIsLoading(true);
         const data = await pledge([
           {
@@ -49,6 +44,17 @@ const CampaignDetailed = (props) => {
             value: ethers.utils.parseEther(amount), // send 0.1 ether with the contract call
           },
         ]);
+        if (data) {
+          const response = await ContributionAPI.fund(
+            {
+              campaignId: campaign["_id"],
+              amount,
+            },
+            token
+          );
+        }
+        displaySuccess("Funded Successfully!");
+        setAmount("");
         console.info("contract call successs", data);
         router.push("/");
         setIsLoading(false);
@@ -64,7 +70,7 @@ const CampaignDetailed = (props) => {
       ) : (
         <div>
           <h1 className="text-white font-epilogue font-bold text-[30px]">
-            {campaign.title}
+            {campaign.title} - status: ({campaign.state})
           </h1>
           <div className="w-full flex md:flex-row flex-col mt-10 gap-[30px]">
             <div className="flex-1 flex-col">
@@ -153,7 +159,7 @@ const CampaignDetailed = (props) => {
                   </p>
                   <div className="mt-[30px]">
                     <input
-                      type="number"
+                      type="text"
                       placeholder="ETH 0.1"
                       step="0.01"
                       className="w-full py-[10px] sm:px-[20px] px-[15px] outline-none border-[1px] border-[#3a3a43] bg-transparent font-epilogue text-white text-[18px] leading-[30px] placeholder:text-[#4b5264] rounded-[10px]"
@@ -183,7 +189,7 @@ const CampaignDetailed = (props) => {
                 </div>
               </div>
             )}
-            {role && campaign.state !== "deployed" && (
+            {role === "true" && campaign.state === "pending" ? (
               <div>
                 <CustomButton
                   btnType="button"
@@ -230,7 +236,7 @@ const CampaignDetailed = (props) => {
                   }}
                 />
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       )}

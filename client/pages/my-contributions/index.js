@@ -6,7 +6,6 @@ import CustomButton from "../../src/components/CustomButton";
 import HandleRefund from "../../src/components/HandleRefund";
 const MyContributions = (props) => {
   const campaigns = props.response;
-  console.log(campaigns);
   const router = useRouter();
   return (
     <div>
@@ -31,7 +30,7 @@ const MyContributions = (props) => {
                     {...e.campaign}
                     handleClick={() =>
                       router.push(
-                        `/my-contributions/${e.campaign["_id"]}/requests`
+                        `/my-contributions/${e.campaign.address}/requests`
                       )
                     }
                   />
@@ -39,6 +38,7 @@ const MyContributions = (props) => {
                     title={`Refund ${e.amount}`}
                     styles="bg-[#c92a2a]"
                     id={e.campaign["_id"]}
+                    address={e.campaign.address}
                   />
                 </div>
               ))}
@@ -59,12 +59,10 @@ export async function getServerSideProps({ req }) {
   const accessToken = req.cookies.token;
   try {
     const response = await ContributionAPI.getAll(accessToken);
-    console.log(response);
     return {
       props: { response },
     };
   } catch (err) {
-    console.log(err);
     return { props: {} };
   }
 }

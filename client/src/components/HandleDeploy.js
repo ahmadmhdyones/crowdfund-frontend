@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useStateContext } from "../context/index";
 import { ethers } from "ethers";
 import { useContract, useContractRead } from "@thirdweb-dev/react";
@@ -28,7 +28,7 @@ const HandleDeploy = ({
   const { contract } = useContract(
     "0xC01cb8f8EA2D8324cb8d302dD4469278E39ff536"
   );
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleClick = async () => {
     console.log(
       name,
@@ -49,8 +49,10 @@ const HandleDeploy = ({
       min: ethers.utils.parseUnits(min.toString(), 18),
     };
     try {
+      setIsLoading(true);
       const data = await publishCampaign(form);
-      console.log("contract call successs", data);
+
+      console.log("contract call successs", data.receipt.logs);
       if (data) {
         // const campaign = await getDeployedCampaigns().slice(-1);
         const campaigns = await contract.call("getDeployedCampaigns");
@@ -60,19 +62,34 @@ const HandleDeploy = ({
         displaySuccess("Successfully Deployed!");
         router.push("/my-campaigns");
       }
+      setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
       console.log(err);
     }
   };
   return (
-    <button
-      disabled={isDisabled}
-      type={btnType}
-      className={`font-epilogue font-semibold text-[16px] leading-[26px] text-white min-h-[52px] px-4 rounded-[10px] disabled:opacity-50 ${styles}`}
-      onClick={handleClick}
-    >
-      {buttonTitle}
-    </button>
+    <>
+      {isLoading ? (
+        <button
+          disabled={isDisabled}
+          type={btnType}
+          className={`font-epilogue font-semibold text-[16px] leading-[26px] text-white min-h-[52px] px-4 rounded-[10px] disabled:opacity-50 flex justify-center ${styles}`}
+          onClick={handleClick}
+        >
+          <img src="/loader.svg" alt="loader" className="w-[50px] " />
+        </button>
+      ) : (
+        <button
+          disabled={isDisabled}
+          type={btnType}
+          className={`font-epilogue font-semibold text-[16px] leading-[26px] text-white min-h-[52px] px-4 rounded-[10px] disabled:opacity-50 ${styles}`}
+          onClick={handleClick}
+        >
+          {buttonTitle}
+        </button>
+      )}
+    </>
   );
 };
 
